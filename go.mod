@@ -1,4 +1,4 @@
-module gopenid
+module github.com/tanopwan/gopenid
 
 go 1.12
 
