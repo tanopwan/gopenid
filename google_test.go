@@ -2,7 +2,7 @@ package gopenid_test
 
 import (
 	"fmt"
-	"gopenid"
+	"github.com/tanopwan/gopenid"
 	"testing"
 	"time"
 )
