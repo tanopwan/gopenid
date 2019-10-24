@@ -5,7 +5,7 @@ import (
 	"fmt"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/lestrrat/go-jwx/jwk"
-	"github.com/pkg/errors"
+	"errors"
 	"net/http"
 	"net/url"
 	"time"
@@ -52,19 +52,19 @@ func getKeyFunction(cc Cache) jwt.Keyfunc {
 		{
 			u, err := url.ParseRequestURI(googleDomain)
 			if err != nil {
-				return nil, errors.Wrap(ErrInternalServerError, fmt.Sprintf("failed to parse request uri: %s", err.Error()))
+				return nil, fmt.Errorf("failed to parse request uri: %w", err)
 			}
 			u.Path = openIDURI
 			urlStr := u.String()
 
 			r, err := http.NewRequest("GET", urlStr, nil)
 			if err != nil {
-				return nil, errors.Wrap(ErrInternalServerError, fmt.Sprintf("failed to create request body: %s", err.Error()))
+				return nil, fmt.Errorf("failed to create request body: %w", err)
 			}
 
 			resp, err := client.Do(r)
 			if err != nil {
-				return nil, errors.Wrap(ErrExternalDAO, fmt.Sprintf("failed to read response: %s", err.Error()))
+				return nil, fmt.Errorf("failed to read response: %w", err)
 			}
 			defer func() {
 				err := resp.Body.Close()
@@ -91,7 +91,7 @@ func getKeyFunction(cc Cache) jwt.Keyfunc {
 
 			err = json.NewDecoder(resp.Body).Decode(&respBody)
 			if err != nil {
-				return nil, errors.Wrap(ErrInternalServerError, fmt.Sprintf("failed to decode response body: %s", err.Error()))
+				return nil, fmt.Errorf("failed to decode response body: %w", err)
 			}
 
 			jwksURI = respBody.JwksURI
@@ -125,9 +125,5 @@ func (s *GoogleService) TokenInfoForProd(IDToken string) (*jwt.MapClaims, error)
 	}
 
 	claims := token.Claims.(jwt.MapClaims)
-	// for key, value := range claims {
-	// 	fmt.Printf("%s\t%v\n", key, value)
-	// }
-
 	return &claims, nil
 }
