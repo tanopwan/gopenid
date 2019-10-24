@@ -5,7 +5,6 @@ import (
 	"fmt"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/lestrrat/go-jwx/jwk"
-	"errors"
 	"net/http"
 	"net/url"
 	"time"
@@ -33,7 +32,7 @@ func getKeyFunction(cc Cache) jwt.Keyfunc {
 	return func(token *jwt.Token) (interface{}, error) {
 		keyID, ok := token.Header["kid"].(string)
 		if !ok {
-			return nil, errors.New("expecting JWT header to have string kid")
+			return nil, ErrJWTHeaderMissingKID
 		}
 
 		if cc != nil {
@@ -113,7 +112,7 @@ func getKeyFunction(cc Cache) jwt.Keyfunc {
 			return m, nil
 		}
 
-		return nil, errors.New("unable to find key (key is too old)")
+		return nil, ErrPublicKeyIsNotFound
 	}
 }
 

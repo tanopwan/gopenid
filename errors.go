@@ -5,9 +5,6 @@ import (
 )
 
 var (
-	// ErrExternalDAO calling external dao error without business reason
-	ErrExternalDAO = errors.New("external dao error")
-
-	// ErrInternalServerError json error, parsing error
-	ErrInternalServerError = errors.New("internal server error")
+	ErrJWTHeaderMissingKID = errors.New("expecting JWT header to have string kid")
+	ErrPublicKeyIsNotFound = errors.New("unable to find public key (key is too old)")
 )
